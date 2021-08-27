@@ -995,7 +995,7 @@
 <ul>
   <li><code class="language-plaintext highlighter-rouge">x ~ Normal()</code> will generate a <code class="language-plaintext highlighter-rouge">VarName(:x, ())</code>.</li>
   <li><code class="language-plaintext highlighter-rouge">x[1] ~ Normal()</code> will generate a <code class="language-plaintext highlighter-rouge">VarName(:x, ((1,),))</code>.</li>
-  <li><code class="language-plaintext highlighter-rouge">x[:,1] ~ MvNormal(zeros(2))</code> will generate a <code class="language-plaintext highlighter-rouge">VarName(:x, ((Colon(), 1),))</code>.</li>
+  <li><code class="language-plaintext highlighter-rouge">x[:,1] ~ MvNormal(zeros(2), I)</code> will generate a <code class="language-plaintext highlighter-rouge">VarName(:x, ((Colon(), 1),))</code>.</li>
   <li><code class="language-plaintext highlighter-rouge">x[:,1][1+1] ~ Normal()</code> will generate a <code class="language-plaintext highlighter-rouge">VarName(:x, ((Colon(), 1), (2,)))</code>.</li>
 </ul>
 
@@ -1056,7 +1056,7 @@ end
 
 <p>value of <code class="language-plaintext highlighter-rouge">flag</code> corresponding to <code class="language-plaintext highlighter-rouge">vn</code>.</p>
 
-<p>Note that in order to make <code class="language-plaintext highlighter-rouge">md::Metadata</code> type stable, all the <code class="language-plaintext highlighter-rouge">md.vns</code> must have the same symbol and distribution type. However, one can have a single Julia variable, e.g. <code class="language-plaintext highlighter-rouge">x</code>, that is a matrix or a hierarchical array sampled in partitions, e.g. <code class="language-plaintext highlighter-rouge">x[1][:] ~ MvNormal(zeros(2), 1.0); x[2][:] ~ MvNormal(ones(2), 1.0)</code>. The symbol <code class="language-plaintext highlighter-rouge">x</code> can still be managed by a single <code class="language-plaintext highlighter-rouge">md::Metadata</code> without hurting the type stability since all the distributions on the RHS of <code class="language-plaintext highlighter-rouge">~</code> are of the same type.</p>
+<p>Note that in order to make <code class="language-plaintext highlighter-rouge">md::Metadata</code> type stable, all the <code class="language-plaintext highlighter-rouge">md.vns</code> must have the same symbol and distribution type. However, one can have a single Julia variable, e.g. <code class="language-plaintext highlighter-rouge">x</code>, that is a matrix or a hierarchical array sampled in partitions, e.g. <code class="language-plaintext highlighter-rouge">x[1][:] ~ MvNormal(zeros(2), I); x[2][:] ~ MvNormal(ones(2), I)</code>. The symbol <code class="language-plaintext highlighter-rouge">x</code> can still be managed by a single <code class="language-plaintext highlighter-rouge">md::Metadata</code> without hurting the type stability since all the distributions on the RHS of <code class="language-plaintext highlighter-rouge">~</code> are of the same type.</p>
 
 <p>However, in <code class="language-plaintext highlighter-rouge">Turing</code> models one cannot have this restriction, so we must use a type unstable <code class="language-plaintext highlighter-rouge">Metadata</code> if we want to use one <code class="language-plaintext highlighter-rouge">Metadata</code> instance for the whole model. This is what <code class="language-plaintext highlighter-rouge">UntypedVarInfo</code> does. A type unstable <code class="language-plaintext highlighter-rouge">Metadata</code> will still work but will have inferior performance.</p>
 
