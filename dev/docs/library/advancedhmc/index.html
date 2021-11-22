@@ -815,9 +815,9 @@
   <li><a href="/dev/docs/library/advancedhmc/#AdvancedHMC.HMCState"><code class="language-plaintext highlighter-rouge">AdvancedHMC.HMCState</code></a></li>
   <li><a href="/dev/docs/library/advancedhmc/#AdvancedHMC.JitteredLeapfrog"><code class="language-plaintext highlighter-rouge">AdvancedHMC.JitteredLeapfrog</code></a></li>
   <li><a href="/dev/docs/library/advancedhmc/#AdvancedHMC.Leapfrog"><code class="language-plaintext highlighter-rouge">AdvancedHMC.Leapfrog</code></a></li>
-  <li><a href="/dev/docs/library/advancedhmc/#AdvancedHMC.MultinomialTS-Tuple{MultinomialTS, AbstractFloat, AdvancedHMC.PhasePoint}"><code class="language-plaintext highlighter-rouge">AdvancedHMC.MultinomialTS</code></a></li>
   <li><a href="/dev/docs/library/advancedhmc/#AdvancedHMC.MultinomialTS"><code class="language-plaintext highlighter-rouge">AdvancedHMC.MultinomialTS</code></a></li>
   <li><a href="/dev/docs/library/advancedhmc/#AdvancedHMC.MultinomialTS-Tuple{Random.AbstractRNG, AdvancedHMC.PhasePoint}"><code class="language-plaintext highlighter-rouge">AdvancedHMC.MultinomialTS</code></a></li>
+  <li><a href="/dev/docs/library/advancedhmc/#AdvancedHMC.MultinomialTS-Tuple{MultinomialTS, AbstractFloat, AdvancedHMC.PhasePoint}"><code class="language-plaintext highlighter-rouge">AdvancedHMC.MultinomialTS</code></a></li>
   <li><a href="/dev/docs/library/advancedhmc/#AdvancedHMC.NUTS-Union{Tuple{TC}, Tuple{TS}, Tuple{AdvancedHMC.AbstractIntegrator, Vararg{Any, N} where N}} where {TS, TC}"><code class="language-plaintext highlighter-rouge">AdvancedHMC.NUTS</code></a></li>
   <li><a href="/dev/docs/library/advancedhmc/#AdvancedHMC.PartialMomentumRefreshment"><code class="language-plaintext highlighter-rouge">AdvancedHMC.PartialMomentumRefreshment</code></a></li>
   <li><a href="/dev/docs/library/advancedhmc/#AdvancedHMC.SliceTS-Tuple{SliceTS, AbstractFloat, AdvancedHMC.PhasePoint}"><code class="language-plaintext highlighter-rouge">AdvancedHMC.SliceTS</code></a></li>
@@ -825,9 +825,9 @@
   <li><a href="/dev/docs/library/advancedhmc/#AdvancedHMC.SliceTS"><code class="language-plaintext highlighter-rouge">AdvancedHMC.SliceTS</code></a></li>
   <li><a href="/dev/docs/library/advancedhmc/#AdvancedHMC.StrictGeneralisedNoUTurn"><code class="language-plaintext highlighter-rouge">AdvancedHMC.StrictGeneralisedNoUTurn</code></a></li>
   <li><a href="/dev/docs/library/advancedhmc/#AdvancedHMC.TemperedLeapfrog"><code class="language-plaintext highlighter-rouge">AdvancedHMC.TemperedLeapfrog</code></a></li>
-  <li><a href="/dev/docs/library/advancedhmc/#AdvancedHMC.Termination-Union{Tuple{F}, Tuple{SliceTS, Trajectory, F, F}} where F&lt;:AbstractFloat"><code class="language-plaintext highlighter-rouge">AdvancedHMC.Termination</code></a></li>
   <li><a href="/dev/docs/library/advancedhmc/#AdvancedHMC.Termination"><code class="language-plaintext highlighter-rouge">AdvancedHMC.Termination</code></a></li>
   <li><a href="/dev/docs/library/advancedhmc/#AdvancedHMC.Termination-Union{Tuple{F}, Tuple{MultinomialTS, Trajectory, F, F}} where F&lt;:AbstractFloat"><code class="language-plaintext highlighter-rouge">AdvancedHMC.Termination</code></a></li>
+  <li><a href="/dev/docs/library/advancedhmc/#AdvancedHMC.Termination-Union{Tuple{F}, Tuple{SliceTS, Trajectory, F, F}} where F&lt;:AbstractFloat"><code class="language-plaintext highlighter-rouge">AdvancedHMC.Termination</code></a></li>
   <li><a href="/dev/docs/library/advancedhmc/#AdvancedHMC.Trajectory"><code class="language-plaintext highlighter-rouge">AdvancedHMC.Trajectory</code></a></li>
   <li><a href="/dev/docs/library/advancedhmc/#AdvancedHMC.Transition"><code class="language-plaintext highlighter-rouge">AdvancedHMC.Transition</code></a></li>
   <li><a href="/dev/docs/library/advancedhmc/#AdvancedHMC.A-Tuple{Any, Any, Any}"><code class="language-plaintext highlighter-rouge">AdvancedHMC.A</code></a></li>
@@ -1486,6 +1486,13 @@ C = [
 <strong><code class="language-plaintext highlighter-rouge">AdvancedHMC.PartialMomentumRefreshment</code></strong> — <em>Type</em>.</p>
 
 <p>Partial momentum refreshment with refresh rate <code class="language-plaintext highlighter-rouge">α</code>.</p>
+
+<p>See equation (5.19) [1]</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>r' = α⋅r + sqrt(1-α²)⋅G
+</code></pre></div></div>
+
+<p>where r is the momentum and G is a Gaussian random variable.</p>
 
 <p><strong>References</strong></p>
 

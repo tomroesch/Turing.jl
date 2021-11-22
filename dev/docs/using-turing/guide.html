@@ -1287,13 +1287,13 @@
 
 <h4 id="sampling-with-the-mapmle-as-initial-states">Sampling with the MAP/MLE as initial states</h4>
 
-<p>You can begin sampling your chain from an MLE/MAP estimate by extracting the vector of parameter values and providing it to the <code class="language-plaintext highlighter-rouge">sample</code> function with the keyword <code class="language-plaintext highlighter-rouge">init_theta</code>. For example, here is how to sample from the full posterior using the MAP estimate as the starting point:</p>
+<p>You can begin sampling your chain from an MLE/MAP estimate by extracting the vector of parameter values and providing it to the <code class="language-plaintext highlighter-rouge">sample</code> function with the keyword <code class="language-plaintext highlighter-rouge">init_params</code>. For example, here is how to sample from the full posterior using the MAP estimate as the starting point:</p>
 
 <div class="language-julia highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Generate an MAP estimate.</span>
 <span class="n">map_estimate</span> <span class="o">=</span> <span class="n">optimize</span><span class="x">(</span><span class="n">model</span><span class="x">,</span> <span class="n">MAP</span><span class="x">())</span>
 
 <span class="c"># Sample with the MAP estimate as the starting point.</span>
-<span class="n">chain</span> <span class="o">=</span> <span class="n">sample</span><span class="x">(</span><span class="n">model</span><span class="x">,</span> <span class="n">NUTS</span><span class="x">(),</span> <span class="mi">1_000</span><span class="x">,</span> <span class="n">init_theta</span> <span class="o">=</span> <span class="n">map_estimate</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">array</span><span class="x">)</span>
+<span class="n">chain</span> <span class="o">=</span> <span class="n">sample</span><span class="x">(</span><span class="n">model</span><span class="x">,</span> <span class="n">NUTS</span><span class="x">(),</span> <span class="mi">1_000</span><span class="x">,</span> <span class="n">init_params</span> <span class="o">=</span> <span class="n">map_estimate</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">array</span><span class="x">)</span>
 </code></pre></div></div>
 
 <p><a id="Beyond-the-Basics"></a></p>
