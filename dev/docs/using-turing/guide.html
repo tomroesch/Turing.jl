@@ -1331,6 +1331,50 @@
 
 <p>For more details of compositional sampling in Turing.jl, please check the corresponding <a href="http://proceedings.mlr.press/v84/ge18b.html">paper</a>.</p>
 
+<p><a id="Working-with-filldist-and-arraydist"></a></p>
+
+<p><a id="Working-with-filldist-and-arraydist-1"></a></p>
+
+<h3 id="working-with-filldist-and-arraydist">Working with filldist and arraydist</h3>
+
+<p>Turing provides <code class="language-plaintext highlighter-rouge">filldist(dist::Distribution, n::Int)</code> and <code class="language-plaintext highlighter-rouge">arraydist(dists::AbstractVector{&lt;:Distribution})</code> as a simplified interface to construct product distributions, e.g., to model a set of variables that share the same structure but vary by group.</p>
+
+<p><a id="Constructing-product-distributions-with-filldist"></a></p>
+
+<p><a id="Constructing-product-distributions-with-filldist-1"></a></p>
+
+<h4 id="constructing-product-distributions-with-filldist">Constructing product distributions with filldist</h4>
+
+<p>The function <code class="language-plaintext highlighter-rouge">filldist</code> provides a general interface to construct product distributions over distributions of the same type and parameterisation. Note that, in contrast to the product distribution interface provided by Distributions.jl (<code class="language-plaintext highlighter-rouge">Product</code>), <code class="language-plaintext highlighter-rouge">filldist</code> supports product distributions over univariate or multivariate distributions.</p>
+
+<p>Example usage:</p>
+
+<div class="language-julia highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@model</span> <span class="k">function</span><span class="nf"> demo</span><span class="x">(</span><span class="n">x</span><span class="x">,</span> <span class="n">g</span><span class="x">)</span>
+  <span class="n">k</span> <span class="o">=</span> <span class="n">length</span><span class="x">(</span><span class="n">unique</span><span class="x">(</span><span class="n">g</span><span class="x">))</span>
+  <span class="n">a</span> <span class="o">~</span> <span class="n">filldist</span><span class="x">(</span><span class="n">Exponential</span><span class="x">(),</span> <span class="n">k</span><span class="x">)</span> <span class="c"># = Product(fill(Exponential(), k))</span>
+  <span class="n">mu</span> <span class="o">=</span> <span class="n">a</span><span class="x">[</span><span class="n">g</span><span class="x">]</span>
+  <span class="n">x</span> <span class="o">.~</span> <span class="n">Normal</span><span class="o">.</span><span class="x">(</span><span class="n">mu</span><span class="x">)</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p><a id="Constructing-product-distributions-with-arraydist"></a></p>
+
+<p><a id="Constructing-product-distributions-with-arraydist-1"></a></p>
+
+<h4 id="constructing-product-distributions-with-arraydist">Constructing product distributions with arraydist</h4>
+
+<p>The function <code class="language-plaintext highlighter-rouge">arraydist</code> provides a general interface to construct product distributions over distributions of varying type and parameterisation. Note that in contrast to the product distribution interface provided by Distributions.jl (<code class="language-plaintext highlighter-rouge">Product</code>), <code class="language-plaintext highlighter-rouge">arraydist</code> supports product distributions over univariate or multivariate distributions.</p>
+
+<p>Example usage:</p>
+
+<div class="language-julia highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@model</span> <span class="k">function</span><span class="nf"> demo</span><span class="x">(</span><span class="n">x</span><span class="x">,</span> <span class="n">g</span><span class="x">)</span>
+  <span class="n">k</span> <span class="o">=</span> <span class="n">length</span><span class="x">(</span><span class="n">unique</span><span class="x">(</span><span class="n">g</span><span class="x">))</span>
+  <span class="n">a</span> <span class="o">~</span> <span class="n">arraydist</span><span class="x">([</span><span class="n">Exponential</span><span class="x">(</span><span class="n">i</span><span class="x">)</span> <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">k</span><span class="x">])</span>
+  <span class="n">mu</span> <span class="o">=</span> <span class="n">a</span><span class="x">[</span><span class="n">g</span><span class="x">]</span>
+  <span class="n">x</span> <span class="o">.~</span> <span class="n">Normal</span><span class="o">.</span><span class="x">(</span><span class="n">mu</span><span class="x">)</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
 <p><a id="Working-with-MCMCChains.jl"></a></p>
 
 <p><a id="Working-with-MCMCChains.jl-1"></a></p>
