@@ -260,9 +260,9 @@ uuid = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
 
 [[DynamicPPL]]
 deps = ["AbstractMCMC", "AbstractPPL", "BangBang", "Bijectors", "ChainRulesCore", "Distributions", "LinearAlgebra", "MacroTools", "Random", "Setfield", "Test", "ZygoteRules"]
-git-tree-sha1 = "2e9c11f45f6d492aa599aeeedd9ac18c06e3cf8c"
+git-tree-sha1 = "807d28d2cf888ca1bd8aa4786fd19fcbb2f6ad7d"
 uuid = "366bfd00-2699-11ea-058f-f148b4cae6d8"
-version = "0.16.2"
+version = "0.17.3"
 
 [[EllipsisNotation]]
 deps = ["ArrayInterface"]
