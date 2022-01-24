@@ -48,9 +48,9 @@ version = "0.6.6"
 
 [[AdvancedPS]]
 deps = ["AbstractMCMC", "Distributions", "Libtask", "Random", "StatsFuns"]
-git-tree-sha1 = "06da6c283cf17cf0f97ed2c07c29b6333ee83dc9"
+git-tree-sha1 = "3dd8d0eb5040b00f3033c6d1b68dcffee9cd1faf"
 uuid = "576499cb-2369-40b2-a588-c64705576edc"
-version = "0.2.4"
+version = "0.3.2"
 
 [[AdvancedVI]]
 deps = ["Bijectors", "Distributions", "DistributionsAD", "DocStringExtensions", "ForwardDiff", "LinearAlgebra", "ProgressMeter", "Random", "Requires", "StatsBase", "StatsFuns", "Tracker"]
@@ -226,15 +226,15 @@ uuid = "8ba89e20-285c-5b6f-9357-94700520ee1b"
 
 [[Distributions]]
 deps = ["ChainRulesCore", "DensityInterface", "FillArrays", "LinearAlgebra", "PDMats", "Printf", "QuadGK", "Random", "SparseArrays", "SpecialFunctions", "Statistics", "StatsBase", "StatsFuns", "Test"]
-git-tree-sha1 = "08f8555cb66936b871dcfdad09a4f89e754181db"
+git-tree-sha1 = "5863b0b10512ed4add2b5ec07e335dc6121065a5"
 uuid = "31c24e10-a181-5473-b8eb-7969acd0382f"
-version = "0.25.40"
+version = "0.25.41"
 
 [[DistributionsAD]]
 deps = ["Adapt", "ChainRules", "ChainRulesCore", "Compat", "DiffRules", "Distributions", "FillArrays", "LinearAlgebra", "NaNMath", "PDMats", "Random", "Requires", "SpecialFunctions", "StaticArrays", "StatsBase", "StatsFuns", "ZygoteRules"]
-git-tree-sha1 = "a7a18f2cd294ea6268a27877609e03dda38a1c1f"
+git-tree-sha1 = "988864034293097a3d452d441a8bf87111a3e815"
 uuid = "ced4e74d-a319-5a8a-b0ac-84af2272839c"
-version = "0.6.35"
+version = "0.6.36"
 
 [[DocStringExtensions]]
 deps = ["LibGit2"]
@@ -321,6 +321,12 @@ git-tree-sha1 = "f7be53659ab06ddc986428d3a9dcc95f6fa6705a"
 uuid = "b5f81e59-6552-4d32-b1f0-c071b021bf89"
 version = "0.2.2"
 
+[[IRTools]]
+deps = ["InteractiveUtils", "MacroTools", "Test"]
+git-tree-sha1 = "006127162a51f0effbdfaab5ac0c83f8eb7ea8f3"
+uuid = "7869d1d1-7146-5819-86e3-90919afe41df"
+version = "0.4.4"
+
 [[IfElse]]
 git-tree-sha1 = "debdd00ffef04665ccbb3e150747a77560e8fad1"
 uuid = "615f187c-cbe4-4ef1-ba3b-2fcf58d6d173"
@@ -403,6 +409,11 @@ git-tree-sha1 = "591e8dc09ad18386189610acafb970032c519707"
 uuid = "5ab0869b-81aa-558d-bb23-cbf5423bbe9b"
 version = "0.6.3"
 
+[[LRUCache]]
+git-tree-sha1 = "d64a0aff6691612ab9fb0117b0995270871c5dfc"
+uuid = "8ac3fa9e-de4c-5943-b1dc-09c6b5f20637"
+version = "1.3.0"
+
 [[LazyArtifacts]]
 deps = ["Artifacts", "Pkg"]
 uuid = "4af54fe1-eca0-43a8-85a7-787d91b784e3"
@@ -433,16 +444,10 @@ uuid = "29816b5a-b9ab-546f-933c-edad1886dfa8"
 uuid = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
 
 [[Libtask]]
-deps = ["Libtask_jll", "LinearAlgebra", "Statistics"]
-git-tree-sha1 = "90c6ed7f9ac449cddacd80d5c1fca59c97d203e7"
+deps = ["IRTools", "LRUCache", "LinearAlgebra", "MacroTools", "Statistics"]
+git-tree-sha1 = "aab0ab58603da134108a45e3c9f8f2401f7d3606"
 uuid = "6f1fad26-d15e-5dc8-ae53-837a1d7b8c9f"
-version = "0.5.3"
-
-[[Libtask_jll]]
-deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
-git-tree-sha1 = "901fc8752bbc527a6006a951716d661baa9d54e9"
-uuid = "3ae2931a-708c-5973-9c38-ccf7496fb450"
-version = "0.4.3+0"
+version = "0.6.4"
 
 [[LinearAlgebra]]
 deps = ["Libdl"]
@@ -652,9 +657,9 @@ version = "1.2.1"
 
 [[RecursiveArrayTools]]
 deps = ["Adapt", "ArrayInterface", "ChainRulesCore", "DocStringExtensions", "FillArrays", "LinearAlgebra", "RecipesBase", "Requires", "StaticArrays", "Statistics", "ZygoteRules"]
-git-tree-sha1 = "6b96eb51a22af7e927d9618eaaf135a3520f8e2f"
+git-tree-sha1 = "5144e1eafb2ecc75765888a4bdcd3a30a6a08b14"
 uuid = "731186ca-8d62-57ce-b412-fbd966d074cd"
-version = "2.24.0"
+version = "2.24.1"
 
 [[Reexport]]
 git-tree-sha1 = "45e428421666073eab6f2da5c9d310d99bb12f9b"
@@ -745,9 +750,9 @@ version = "0.5.1"
 
 [[StaticArrays]]
 deps = ["LinearAlgebra", "Random", "Statistics"]
-git-tree-sha1 = "2ae4fe21e97cd13efd857462c1869b73c9f61be3"
+git-tree-sha1 = "2884859916598f974858ff01df7dfc6c708dd895"
 uuid = "90137ffa-7385-5640-81b9-e52037218182"
-version = "1.3.2"
+version = "1.3.3"
 
 [[StatisticalTraits]]
 deps = ["ScientificTypesBase"]
