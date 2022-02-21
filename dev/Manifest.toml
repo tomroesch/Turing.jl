@@ -16,9 +16,9 @@ version = "1.1.0"
 
 [[deps.AbstractMCMC]]
 deps = ["BangBang", "ConsoleProgressMonitor", "Distributed", "Logging", "LoggingExtras", "ProgressLogging", "Random", "StatsBase", "TerminalLoggers", "Transducers"]
-git-tree-sha1 = "db0a7ff3fbd987055c43b4e12d2fa30aaae8749c"
+git-tree-sha1 = "0d48d774929f3267a1514cd85caee8b20af59d74"
 uuid = "80f14c24-f653-4e6a-9b94-39d6b0f70001"
-version = "3.2.1"
+version = "3.3.0"
 
 [[deps.AbstractPPL]]
 deps = ["AbstractMCMC", "DensityInterface", "Setfield"]
@@ -51,9 +51,9 @@ version = "0.6.6"
 
 [[deps.AdvancedPS]]
 deps = ["AbstractMCMC", "Distributions", "Libtask", "Random", "StatsFuns"]
-git-tree-sha1 = "59c47e9525d5a807a950d8b79b5d6e60b2f6de82"
+git-tree-sha1 = "8d91d71ded7cf0188efc0c692b93fd3369ffd77b"
 uuid = "576499cb-2369-40b2-a588-c64705576edc"
-version = "0.3.3"
+version = "0.3.5"
 
 [[deps.AdvancedVI]]
 deps = ["Bijectors", "Distributions", "DistributionsAD", "DocStringExtensions", "ForwardDiff", "LinearAlgebra", "ProgressMeter", "Random", "Requires", "StatsBase", "StatsFuns", "Tracker"]
@@ -720,9 +720,9 @@ uuid = "ea8e919c-243c-51af-8825-aaa63cd721ce"
 
 [[deps.SciMLBase]]
 deps = ["ArrayInterface", "CommonSolve", "ConstructionBase", "Distributed", "DocStringExtensions", "IteratorInterfaceExtensions", "LinearAlgebra", "Logging", "RecipesBase", "RecursiveArrayTools", "StaticArrays", "Statistics", "Tables", "TreeViews"]
-git-tree-sha1 = "f4862c0cb4e34ed182718221028ba1bf50742108"
+git-tree-sha1 = "8ff1bf96965b3878ca5d235752ff1daf519e7a26"
 uuid = "0bca4576-84f4-4d90-8ffe-ffa030f20462"
-version = "1.26.1"
+version = "1.26.3"
 
 [[deps.ScientificTypesBase]]
 git-tree-sha1 = "a8e18eb383b5ecf1b5e6fc237eb39255044fd92b"
@@ -863,7 +863,7 @@ version = "0.3.0"
 deps = ["AbstractMCMC", "AdvancedHMC", "AdvancedMH", "AdvancedPS", "AdvancedVI", "BangBang", "Bijectors", "DataStructures", "Distributions", "DistributionsAD", "DocStringExtensions", "DynamicPPL", "EllipticalSliceSampling", "ForwardDiff", "Libtask", "LinearAlgebra", "MCMCChains", "NamedArrays", "Printf", "Random", "Reexport", "Requires", "SciMLBase", "SpecialFunctions", "Statistics", "StatsBase", "StatsFuns", "Tracker", "ZygoteRules"]
 path = "/home/runner/work/Turing.jl/Turing.jl"
 uuid = "fce5fe82-541a-59a6-adf8-730c64b5f9a0"
-version = "0.20.3"
+version = "0.20.4"
 
 [[deps.UUIDs]]
 deps = ["Random", "SHA"]
