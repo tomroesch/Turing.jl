@@ -16,9 +16,9 @@ version = "1.1.0"
 
 [[deps.AbstractMCMC]]
 deps = ["BangBang", "ConsoleProgressMonitor", "Distributed", "Logging", "LoggingExtras", "ProgressLogging", "Random", "StatsBase", "TerminalLoggers", "Transducers"]
-git-tree-sha1 = "0d48d774929f3267a1514cd85caee8b20af59d74"
+git-tree-sha1 = "5dfb2514d115b449127f29eb7b3272c5528d396e"
 uuid = "80f14c24-f653-4e6a-9b94-39d6b0f70001"
-version = "3.3.0"
+version = "3.3.1"
 
 [[deps.AbstractPPL]]
 deps = ["AbstractMCMC", "DensityInterface", "Setfield"]
@@ -124,9 +124,9 @@ version = "1.27.0"
 
 [[deps.ChainRulesCore]]
 deps = ["Compat", "LinearAlgebra", "SparseArrays"]
-git-tree-sha1 = "7dd38532a1115a215de51775f9891f0f3e1bac6a"
+git-tree-sha1 = "c9a6160317d1abe9c44b3beb367fd448117679ca"
 uuid = "d360d2e6-b24c-11e9-a2a3-2a2ae2dbcce4"
-version = "1.12.1"
+version = "1.13.0"
 
 [[deps.ChangesOfVariables]]
 deps = ["ChainRulesCore", "LinearAlgebra", "Test"]
@@ -466,9 +466,9 @@ uuid = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
 
 [[deps.Libtask]]
 deps = ["IRTools", "LRUCache", "LinearAlgebra", "MacroTools", "Statistics"]
-git-tree-sha1 = "973337198b57f8f359f89988b9518204008927c1"
+git-tree-sha1 = "ed1b54f6df6fb7af8b315cfdc288ab5572dbd3ba"
 uuid = "6f1fad26-d15e-5dc8-ae53-837a1d7b8c9f"
-version = "0.6.10"
+version = "0.7.0"
 
 [[deps.LinearAlgebra]]
 deps = ["Libdl", "libblastrampoline_jll"]
@@ -491,9 +491,9 @@ version = "0.4.7"
 
 [[deps.MCMCChains]]
 deps = ["AbstractMCMC", "AxisArrays", "Compat", "Dates", "Distributions", "Formatting", "IteratorInterfaceExtensions", "KernelDensity", "LinearAlgebra", "MCMCDiagnosticTools", "MLJModelInterface", "NaturalSort", "OrderedCollections", "PrettyTables", "Random", "RecipesBase", "Serialization", "Statistics", "StatsBase", "StatsFuns", "TableTraits", "Tables"]
-git-tree-sha1 = "ddafbd2a95114d13721f2b6ddeeaee9529d6bc2b"
+git-tree-sha1 = "da663577b5dfc951ad635cec12dfd1ea995152c8"
 uuid = "c7f686f2-ff18-58e9-bc7b-31028e88f75d"
-version = "5.0.3"
+version = "5.0.4"
 
 [[deps.MCMCDiagnosticTools]]
 deps = ["AbstractFFTs", "DataAPI", "Distributions", "LinearAlgebra", "MLJModelInterface", "Random", "SpecialFunctions", "Statistics", "StatsBase", "Tables"]
@@ -602,9 +602,9 @@ version = "1.4.1"
 
 [[deps.PDMats]]
 deps = ["LinearAlgebra", "SparseArrays", "SuiteSparse"]
-git-tree-sha1 = "ee26b350276c51697c9c2d88a072b339f9f03d73"
+git-tree-sha1 = "7e2166042d1698b6072352c74cfd1fca2a968253"
 uuid = "90014a1f-27ba-587c-ab20-58faa44d9150"
-version = "0.11.5"
+version = "0.11.6"
 
 [[deps.Parsers]]
 deps = ["Dates"]
@@ -618,9 +618,9 @@ uuid = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 
 [[deps.Preferences]]
 deps = ["TOML"]
-git-tree-sha1 = "2cf929d64681236a2e074ffafb8d568733d2e6af"
+git-tree-sha1 = "de893592a221142f3db370f48290e3a2ef39998f"
 uuid = "21216c6a-2e73-6563-6e65-726566657250"
-version = "1.2.3"
+version = "1.2.4"
 
 [[deps.PrettyTables]]
 deps = ["Crayons", "Formatting", "Markdown", "Reexport", "Tables"]
@@ -863,7 +863,7 @@ version = "0.3.0"
 deps = ["AbstractMCMC", "AdvancedHMC", "AdvancedMH", "AdvancedPS", "AdvancedVI", "BangBang", "Bijectors", "DataStructures", "Distributions", "DistributionsAD", "DocStringExtensions", "DynamicPPL", "EllipticalSliceSampling", "ForwardDiff", "Libtask", "LinearAlgebra", "MCMCChains", "NamedArrays", "Printf", "Random", "Reexport", "Requires", "SciMLBase", "SpecialFunctions", "Statistics", "StatsBase", "StatsFuns", "Tracker", "ZygoteRules"]
 path = "/home/runner/work/Turing.jl/Turing.jl"
 uuid = "fce5fe82-541a-59a6-adf8-730c64b5f9a0"
-version = "0.20.4"
+version = "0.20.5"
 
 [[deps.UUIDs]]
 deps = ["Random", "SHA"]
