@@ -817,8 +817,7 @@
 
 <p>First, define a type of the distribution, as a subtype of a corresponding distribution type in the Distributions.jl package.</p>
 
-<div class="language-julia highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span><span class="nc"> CustomUniform</span> <span class="o">&lt;:</span> <span class="n">ContinuousUnivariateDistribution</span>
-<span class="k">end</span>
+<div class="language-julia highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span><span class="nc"> CustomUniform</span> <span class="o">&lt;:</span> <span class="n">ContinuousUnivariateDistribution</span> <span class="k">end</span>
 </code></pre></div></div>
 
 <p><a id=".-Implement-Sampling-and-Evaluation-of-the-log-pdf"></a></p>
@@ -829,8 +828,11 @@
 
 <p>Second, define <code class="language-plaintext highlighter-rouge">rand</code> and <code class="language-plaintext highlighter-rouge">logpdf</code>, which will be used to run the model.</p>
 
-<div class="language-julia highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Distributions</span><span class="o">.</span><span class="n">rand</span><span class="x">(</span><span class="n">rng</span><span class="o">::</span><span class="kt">AbstractRNG</span><span class="x">,</span> <span class="n">d</span><span class="o">::</span><span class="n">CustomUniform</span><span class="x">)</span> <span class="o">=</span> <span class="n">rand</span><span class="x">(</span><span class="n">rng</span><span class="x">)</span> <span class="c"># sample in [0, 1]</span>
-<span class="n">Distributions</span><span class="o">.</span><span class="n">logpdf</span><span class="x">(</span><span class="n">d</span><span class="o">::</span><span class="n">CustomUniform</span><span class="x">,</span> <span class="n">x</span><span class="o">::</span><span class="kt">Real</span><span class="x">)</span> <span class="o">=</span> <span class="n">zero</span><span class="x">(</span><span class="n">x</span><span class="x">)</span>          <span class="c"># p(x) = 1 → logp(x) = 0</span>
+<div class="language-julia highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># sample in [0, 1]</span>
+<span class="n">Distributions</span><span class="o">.</span><span class="n">rand</span><span class="x">(</span><span class="n">rng</span><span class="o">::</span><span class="kt">AbstractRNG</span><span class="x">,</span> <span class="n">d</span><span class="o">::</span><span class="n">CustomUniform</span><span class="x">)</span> <span class="o">=</span> <span class="n">rand</span><span class="x">(</span><span class="n">rng</span><span class="x">)</span>
+
+<span class="c"># p(x) = 1 → logp(x) = 0</span>
+<span class="n">Distributions</span><span class="o">.</span><span class="n">logpdf</span><span class="x">(</span><span class="n">d</span><span class="o">::</span><span class="n">CustomUniform</span><span class="x">,</span> <span class="n">x</span><span class="o">::</span><span class="kt">Real</span><span class="x">)</span> <span class="o">=</span> <span class="n">zero</span><span class="x">(</span><span class="n">x</span><span class="x">)</span>
 </code></pre></div></div>
 
 <p><a id=".-Define-Helper-Functions"></a></p>
@@ -879,24 +881,13 @@
 
 <p>To read more about Bijectors.jl, check out <a href="https://github.com/TuringLang/Bijectors.jl">the project README</a>.</p>
 
-<p><a id=".2-Vectorization-Support"></a></p>
-
-<p><a id=".2-Vectorization-Support-1"></a></p>
-
-<h4 id="32-vectorization-support">3.2 Vectorization Support</h4>
-
-<p>The vectorization syntax follows <code class="language-plaintext highlighter-rouge">rv ~ [distribution]</code>, which requires <code class="language-plaintext highlighter-rouge">rand</code> and <code class="language-plaintext highlighter-rouge">logpdf</code> to be called on multiple data points at once. An appropriate implementation for <code class="language-plaintext highlighter-rouge">Flat</code> is shown below.</p>
-
-<div class="language-julia highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Distributions</span><span class="o">.</span><span class="n">logpdf</span><span class="x">(</span><span class="n">d</span><span class="o">::</span><span class="n">Flat</span><span class="x">,</span> <span class="n">x</span><span class="o">::</span><span class="kt">AbstractVector</span><span class="x">{</span><span class="o">&lt;:</span><span class="kt">Real</span><span class="x">})</span> <span class="o">=</span> <span class="n">zero</span><span class="x">(</span><span class="n">x</span><span class="x">)</span>
-</code></pre></div></div>
-
 <p><a id="Update-the-accumulated-log-probability-in-the-model-definition"></a></p>
 
 <p><a id="Update-the-accumulated-log-probability-in-the-model-definition-1"></a></p>
 
 <h2 id="update-the-accumulated-log-probability-in-the-model-definition">Update the accumulated log probability in the model definition</h2>
 
-<p>Turing accumulates log probabilities internally in an internal data structure that is accessible through the internal variable <code class="language-plaintext highlighter-rouge">_varinfo</code> inside of the model definition (see below for more details about model internals). However, since users should not have to deal with internal data structures, a macro <code class="language-plaintext highlighter-rouge">Turing.@addlogprob!</code> is provided that increases the accumulated log probability. For instance, this allows you to <a href="https://github.com/TuringLang/Turing.jl/issues/1332">include arbitrary terms in the likelihood</a></p>
+<p>Turing accumulates log probabilities internally in an internal data structure that is accessible through the internal variable <code class="language-plaintext highlighter-rouge">__varinfo__</code> inside of the model definition (see below for more details about model internals). However, since users should not have to deal with internal data structures, a macro <code class="language-plaintext highlighter-rouge">Turing.@addlogprob!</code> is provided that increases the accumulated log probability. For instance, this allows you to <a href="https://github.com/TuringLang/Turing.jl/issues/1332">include arbitrary terms in the likelihood</a></p>
 
 <div class="language-julia highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">using</span> <span class="n">Turing</span>
 
@@ -926,9 +917,9 @@
 <span class="k">end</span>
 </code></pre></div></div>
 
-<p>Note that <code class="language-plaintext highlighter-rouge">@addlogprob!</code> always increases the accumulated log probability, regardless of the provided sampling context. For instance, if you do not want to apply <code class="language-plaintext highlighter-rouge">Turing.@addlogprob!</code> when evaluating the prior of your model but only when computing the log likelihood and the log joint probability, then you should <a href="https://github.com/TuringLang/DynamicPPL.jl/issues/154">check the type of the internal variable <code class="language-plaintext highlighter-rouge">_context</code></a> such as</p>
+<p>Note that <code class="language-plaintext highlighter-rouge">@addlogprob!</code> always increases the accumulated log probability, regardless of the provided sampling context. For instance, if you do not want to apply <code class="language-plaintext highlighter-rouge">Turing.@addlogprob!</code> when evaluating the prior of your model but only when computing the log likelihood and the log joint probability, then you should <a href="https://github.com/TuringLang/DynamicPPL.jl/issues/154">check the type of the internal variable <code class="language-plaintext highlighter-rouge">__context_</code></a> such as</p>
 
-<div class="language-julia highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="o">!</span><span class="k">isa</span><span class="x">(</span><span class="n">_context</span><span class="x">,</span> <span class="n">Turing</span><span class="o">.</span><span class="n">PriorContext</span><span class="x">)</span>
+<div class="language-julia highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="n">DynamicPPL</span><span class="o">.</span><span class="n">leafcontext</span><span class="x">(</span><span class="n">__context__</span><span class="x">)</span> <span class="o">!==</span> <span class="n">Turing</span><span class="o">.</span><span class="n">PriorContext</span><span class="x">()</span>
     <span class="n">Turing</span><span class="o">.</span><span class="nd">@addlogprob</span><span class="o">!</span> <span class="n">myloglikelihood</span><span class="x">(</span><span class="n">x</span><span class="x">,</span> <span class="n">μ</span><span class="x">)</span>
 <span class="k">end</span>
 </code></pre></div></div>
@@ -955,40 +946,35 @@
 <span class="n">model</span> <span class="o">=</span> <span class="n">gdemo</span><span class="x">([</span><span class="mf">1.5</span><span class="x">,</span> <span class="mf">2.0</span><span class="x">])</span>
 </code></pre></div></div>
 
-<p>is equivalent to the macro-free version</p>
+<p>can be implemented also (a bit less generally) with the macro-free version</p>
 
 <div class="language-julia highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">using</span> <span class="n">Turing</span>
 
 <span class="c"># Create the model function.</span>
-<span class="k">function</span><span class="nf"> modelf</span><span class="x">(</span><span class="n">rng</span><span class="x">,</span> <span class="n">model</span><span class="x">,</span> <span class="n">varinfo</span><span class="x">,</span> <span class="n">sampler</span><span class="x">,</span> <span class="n">context</span><span class="x">,</span> <span class="n">x</span><span class="x">)</span>
-    <span class="c"># Assume s has an InverseGamma distribution.</span>
-    <span class="n">s²</span> <span class="o">=</span> <span class="n">Turing</span><span class="o">.</span><span class="n">DynamicPPL</span><span class="o">.</span><span class="n">tilde_assume</span><span class="x">(</span>
-        <span class="n">rng</span><span class="x">,</span>
+<span class="k">function</span><span class="nf"> gdemo</span><span class="x">(</span><span class="n">model</span><span class="x">,</span> <span class="n">varinfo</span><span class="x">,</span> <span class="n">context</span><span class="x">,</span> <span class="n">x</span><span class="x">)</span>
+    <span class="c"># Assume s² has an InverseGamma distribution.</span>
+    <span class="n">s²</span><span class="x">,</span> <span class="n">varinfo</span> <span class="o">=</span> <span class="n">DynamicPPL</span><span class="o">.</span><span class="n">tilde_assume!!</span><span class="x">(</span>
         <span class="n">context</span><span class="x">,</span>
-        <span class="n">sampler</span><span class="x">,</span>
         <span class="n">InverseGamma</span><span class="x">(</span><span class="mi">2</span><span class="x">,</span> <span class="mi">3</span><span class="x">),</span>
-        <span class="n">Turing</span><span class="o">.</span><span class="nd">@varname</span><span class="x">(</span><span class="n">s</span><span class="x">),</span>
-        <span class="x">(),</span>
+        <span class="n">Turing</span><span class="o">.</span><span class="nd">@varname</span><span class="x">(</span><span class="n">s²</span><span class="x">),</span>
         <span class="n">varinfo</span><span class="x">,</span>
     <span class="x">)</span>
 
     <span class="c"># Assume m has a Normal distribution.</span>
-    <span class="n">m</span> <span class="o">=</span> <span class="n">Turing</span><span class="o">.</span><span class="n">DynamicPPL</span><span class="o">.</span><span class="n">tilde_assume</span><span class="x">(</span>
-        <span class="n">rng</span><span class="x">,</span>
+    <span class="n">m</span><span class="x">,</span> <span class="n">varinfo</span> <span class="o">=</span> <span class="n">DynamicPPL</span><span class="o">.</span><span class="n">tilde_assume!!</span><span class="x">(</span>
         <span class="n">context</span><span class="x">,</span>
-        <span class="n">sampler</span><span class="x">,</span>
         <span class="n">Normal</span><span class="x">(</span><span class="mi">0</span><span class="x">,</span> <span class="n">sqrt</span><span class="x">(</span><span class="n">s²</span><span class="x">)),</span>
         <span class="n">Turing</span><span class="o">.</span><span class="nd">@varname</span><span class="x">(</span><span class="n">m</span><span class="x">),</span>
-        <span class="x">(),</span>
         <span class="n">varinfo</span><span class="x">,</span>
     <span class="x">)</span>
 
     <span class="c"># Observe each value of x[i] according to a Normal distribution.</span>
-    <span class="n">Turing</span><span class="o">.</span><span class="n">DynamicPPL</span><span class="o">.</span><span class="n">dot_tilde_observe</span><span class="x">(</span><span class="n">context</span><span class="x">,</span> <span class="n">sampler</span><span class="x">,</span> <span class="n">Normal</span><span class="x">(</span><span class="n">m</span><span class="x">,</span> <span class="n">sqrt</span><span class="x">(</span><span class="n">s²</span><span class="x">)),</span> <span class="n">x</span><span class="x">,</span> <span class="n">varinfo</span><span class="x">)</span>
+    <span class="n">DynamicPPL</span><span class="o">.</span><span class="n">dot_tilde_observe!!</span><span class="x">(</span><span class="n">context</span><span class="x">,</span> <span class="n">Normal</span><span class="x">(</span><span class="n">m</span><span class="x">,</span> <span class="n">sqrt</span><span class="x">(</span><span class="n">s²</span><span class="x">)),</span> <span class="n">x</span><span class="x">,</span> <span class="n">Turing</span><span class="o">.</span><span class="nd">@varname</span><span class="x">(</span><span class="n">x</span><span class="x">),</span> <span class="n">varinfo</span><span class="x">)</span>
 <span class="k">end</span>
+<span class="n">gdemo</span><span class="x">(</span><span class="n">x</span><span class="x">)</span> <span class="o">=</span> <span class="n">Turing</span><span class="o">.</span><span class="n">Model</span><span class="x">(</span><span class="o">:</span><span class="n">gdemo</span><span class="x">,</span> <span class="n">gdemo</span><span class="x">,</span> <span class="x">(;</span> <span class="n">x</span><span class="x">))</span>
 
 <span class="c"># Instantiate a Model object with our data variables.</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">Turing</span><span class="o">.</span><span class="n">Model</span><span class="x">(</span><span class="n">modelf</span><span class="x">,</span> <span class="x">(</span><span class="n">x</span> <span class="o">=</span> <span class="x">[</span><span class="mf">1.5</span><span class="x">,</span> <span class="mf">2.0</span><span class="x">],))</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">gdemo</span><span class="x">([</span><span class="mf">1.5</span><span class="x">,</span> <span class="mf">2.0</span><span class="x">])</span>
 </code></pre></div></div>
 
 <p><a id="Task-Copying"></a></p>
