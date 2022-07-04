@@ -78,24 +78,25 @@ function DynamicPPL.initialstep(
 )
     # Ensure that initial sample is in unconstrained space.
     if !DynamicPPL.islinked(vi, spl)
+        # TODO(torfjelde): Update this once we have a way of transforming variables.
         DynamicPPL.link!(vi, spl)
         model(rng, vi, spl)
     end
 
     # Perform initial step.
+    ℓ = Turing.LogDensityFunction(vi, model, spl, DynamicPPL.DefaultContext())
     results = DynamicHMC.mcmc_keep_warmup(
         rng,
-        Turing.LogDensityFunction(vi, model, spl, DynamicPPL.DefaultContext()),
+        ℓ,
         0;
-        initialization = (q = vi[spl],),
+        initialization = (q = first(DynamicPPL.linearize(vi)),),
         reporter = DynamicHMC.NoProgressReport(),
     )
     steps = DynamicHMC.mcmc_steps(results.sampling_logdensity, results.final_warmup_state)
     Q, _ = DynamicHMC.mcmc_next_step(steps, results.final_warmup_state.Q)
 
     # Update the variables.
-    vi[spl] = Q.q
-    DynamicPPL.setlogp!!(vi, Q.ℓq)
+    vi = DynamicPPL.setlogp!!(ℓ.unflatten(Q.q), Q.ℓq)
 
     # Create first sample and state.
     sample = Transition(vi)
@@ -124,8 +125,7 @@ function AbstractMCMC.step(
     Q, _ = DynamicHMC.mcmc_next_step(steps, state.cache)
 
     # Update the variables.
-    vi[spl] = Q.q
-    DynamicPPL.setlogp!!(vi, Q.ℓq)
+    vi = DynamicPPL.setlogp!!(ℓ.unflatten(Q.q), Q.ℓq)
 
     # Create next sample and state.
     sample = Transition(vi)
