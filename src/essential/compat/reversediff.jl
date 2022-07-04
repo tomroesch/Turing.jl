@@ -16,13 +16,12 @@ end
 function gradient_logp(
     backend::ReverseDiffAD{false},
     θ::AbstractVector{<:Real},
-    vi::VarInfo,
+    vi::AbstractVarInfo,
     model::Model,
-    sampler::AbstractSampler = SampleFromPrior(),
     context::DynamicPPL.AbstractContext = DynamicPPL.DefaultContext()
 )
     # Define log density function.
-    f = Turing.LogDensityFunction(vi, model, sampler, context)
+    f = Turing.LogDensityFunction(vi, model, context)
 
     # Obtain both value and gradient of the log density function.
     tp, result = taperesult(f, θ)
@@ -46,13 +45,12 @@ taperesult(f, x) = (tape(f, x), DiffResults.GradientResult(x))
     function gradient_logp(
         backend::ReverseDiffAD{true},
         θ::AbstractVector{<:Real},
-        vi::VarInfo,
+        vi::AbstractVarInfo,
         model::Model,
-        sampler::AbstractSampler = SampleFromPrior(),
         context::DynamicPPL.AbstractContext = DynamicPPL.DefaultContext()
     )
         # Define log density function.
-        f = Turing.LogDensityFunction(vi, model, sampler, context)
+        f = Turing.LogDensityFunction(vi, model, context)
 
         # Obtain both value and gradient of the log density function.
         ctp, result = memoized_taperesult(f, θ)
