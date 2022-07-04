@@ -150,11 +150,11 @@ function DynamicPPL.initialstep(
     kwargs...
 )
     # Transform the samples to unconstrained space and compute the joint log probability.
-    link!(vi, spl)
+    vi = DynamicPPL.settrans!!(vi, true)
     vi = last(DynamicPPL.evaluate!!(model, rng, vi, spl))
 
     # Extract parameters.
-    theta = vi[spl]
+    theta = first(linearize(vi, spl))
 
     # Create a Hamiltonian.
     metricT = getmetricT(spl.alg)
@@ -171,8 +171,8 @@ function DynamicPPL.initialstep(
     if init_params === nothing
         while !isfinite(z)
             vi = last(DynamicPPL.evaluate!!(model, rng, vi, SampleFromUniform()))
-            link!(vi, spl)
-            theta = vi[spl]
+            vi = DynamicPPL.settrans!!(vi, true)
+            theta = first(linearize(vi, spl))
 
             hamiltonian = AHMC.Hamiltonian(metric, logπ, ∂logπ∂θ)
             z = AHMC.phasepoint(rng, theta, hamiltonian)
@@ -207,11 +207,9 @@ function DynamicPPL.initialstep(
 
     # Update `vi` based on acceptance
     if t.stat.is_accept
-        vi = setindex!!(vi, t.z.θ, spl)
-        vi = setlogp!!(vi, t.stat.log_density)
+        vi = setlogp!!(logπ.unflatten(t.z.θ), t.stat.log_density)
     else
-        vi = setindex!!(vi, theta, spl)
-        vi = setlogp!!(vi, log_density_old)
+        vi = setlogp!!(logπ.unflatten(theta), log_density_old)
     end
 
     transition = HMCTransition(vi, t)
@@ -249,8 +247,7 @@ function AbstractMCMC.step(
     # Update variables
     vi = state.vi
     if t.stat.is_accept
-        vi = setindex!!(vi, t.z.θ, spl)
-        vi = setlogp!!(vi, t.stat.log_density)
+        vi = setlogp!!(state.hamiltonian.ℓπ.unflatten(t.z.θ), t.stat.log_density)
     end
 
     # Compute next transition and state.
@@ -430,7 +427,7 @@ gradient at `θ` for the model specified by `(vi, spl, model)`.
 """
 function gen_∂logπ∂θ(vi, spl::Sampler, model)
     function ∂logπ∂θ(x)
-        return gradient_logp(x, vi, model, spl)
+        return gradient_logp(x, vi, model, SamplingContext(spl))
     end
     return ∂logπ∂θ
 end
