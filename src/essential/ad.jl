@@ -62,6 +62,9 @@ ADBackend(::Val) = error("The requested AD backend is not available. Make sure t
 
 Find the autodifferentiation backend of the algorithm `alg`.
 """
+getADbackend(context::DynamicPPL.AbstractContext) = ADBackend()()
+getADbackend(context::DynamicPPL.SamplingContext) = getADbackend(context.sampler)
+
 getADbackend(spl::Sampler) = getADbackend(spl.alg)
 getADbackend(spl::SampleFromPrior) = ADBackend()()
 
@@ -70,8 +73,7 @@ getADbackend(spl::SampleFromPrior) = ADBackend()()
         θ::AbstractVector{<:Real},
         vi::VarInfo,
         model::Model,
-        sampler::AbstractSampler,
-        ctx::DynamicPPL.AbstractContext = DynamicPPL.DefaultContext()
+        context::DynamicPPL.AbstractContext = DynamicPPL.DefaultContext()
     )
 
 Computes the value of the log joint of `θ` and its gradient for the model
@@ -80,23 +82,21 @@ tool is currently active.
 """
 function gradient_logp(
     θ::AbstractVector{<:Real},
-    vi::VarInfo,
+    vi::AbstractVarInfo,
     model::Model,
-    sampler::AbstractSampler,
-    ctx::DynamicPPL.AbstractContext = DynamicPPL.DefaultContext()
+    context::DynamicPPL.AbstractContext = DynamicPPL.DefaultContext()
 )
-    return gradient_logp(getADbackend(sampler), θ, vi, model, sampler, ctx)
+    return gradient_logp(getADbackend(context), θ, vi, model, context)
 end
 
 """
-gradient_logp(
-    backend::ADBackend,
-    θ::AbstractVector{<:Real},
-    vi::VarInfo,
-    model::Model,
-    sampler::AbstractSampler = SampleFromPrior(),
-    ctx::DynamicPPL.AbstractContext = DynamicPPL.DefaultContext()
-)
+    gradient_logp(
+        backend::ADBackend,
+        θ::AbstractVector{<:Real},
+        vi::VarInfo,
+        model::Model,
+        context::DynamicPPL.AbstractContext = DynamicPPL.DefaultContext()
+    )
 
 Compute the value of the log joint of `θ` and its gradient for the model
 specified by `(vi, sampler, model)` using `backend` for AD, e.g. `ForwardDiffAD{N}()` uses `ForwardDiff.jl` with chunk size `N`, `TrackerAD()` uses `Tracker.jl` and `ZygoteAD()` uses `Zygote.jl`.
@@ -104,13 +104,12 @@ specified by `(vi, sampler, model)` using `backend` for AD, e.g. `ForwardDiffAD{
 function gradient_logp(
     ad::ForwardDiffAD,
     θ::AbstractVector{<:Real},
-    vi::VarInfo,
+    vi::AbstractVarInfo,
     model::Model,
-    sampler::AbstractSampler=SampleFromPrior(),
     context::DynamicPPL.AbstractContext = DynamicPPL.DefaultContext()
 )
     # Define log density function.
-    f = Turing.LogDensityFunction(vi, model, sampler, context)
+    f = Turing.LogDensityFunction(vi, model, context)
 
     # Define configuration for ForwardDiff.
     tag = if standardtag(ad)
@@ -136,13 +135,12 @@ end
 function gradient_logp(
     ::TrackerAD,
     θ::AbstractVector{<:Real},
-    vi::VarInfo,
+    vi::AbstractVarInfo,
     model::Model,
-    sampler::AbstractSampler = SampleFromPrior(),
     context::DynamicPPL.AbstractContext = DynamicPPL.DefaultContext()
 )
     # Define log density function.
-    f = Turing.LogDensityFunction(vi, model, sampler, context)
+    f = Turing.LogDensityFunction(vi, model, context)
 
     # Compute forward pass and pullback.
     l_tracked, ȳ = Tracker.forward(f, θ)
@@ -157,13 +155,12 @@ end
 function gradient_logp(
     backend::ZygoteAD,
     θ::AbstractVector{<:Real},
-    vi::VarInfo,
+    vi::AbstractVarInfo,
     model::Model,
-    sampler::AbstractSampler = SampleFromPrior(),
     context::DynamicPPL.AbstractContext = DynamicPPL.DefaultContext()
 )
     # Define log density function.
-    f = Turing.LogDensityFunction(vi, model, sampler, context)
+    f = Turing.LogDensityFunction(vi, model, context)
 
     # Compute forward pass and pullback.
     l::typeof(getlogp(vi)), ȳ = ZygoteRules.pullback(f, θ)

@@ -8,7 +8,7 @@ using Libtask
 using Tracker: Tracker
 
 import AdvancedVI
-import DynamicPPL: getspace, NoDist, NamedDist
+import DynamicPPL: getspace, NoDist, NamedDist, AbstractVarInfo, AbstractContext, AbstractSampler, Model
 import Random
 
 const PROGRESS = Ref(true)
@@ -26,15 +26,33 @@ function setprogress!(progress::Bool)
 end
 
 # Log density function
-struct LogDensityFunction{V,M,S,C}
+struct LogDensityFunction{V,M,C,U}
     varinfo::V
     model::M
-    sampler::S
     context::C
+    unflatten::U
+end
+
+function LogDensityFunction(varinfo::AbstractVarInfo, model::Model, context::AbstractContext)
+    return LogDensityFunction(
+        varinfo,
+        model,
+        context,
+        last(DynamicPPL.linearize(varinfo))
+    )
+end
+
+function LogDensityFunction(varinfo::AbstractVarInfo, model::Model, sampler::AbstractSampler, context::AbstractContext)
+    return LogDensityFunction(
+        varinfo,
+        model,
+        SamplingContext(sampler, context),
+        last(DynamicPPL.linearize(varinfo, sampler))
+    )
 end
 
 function (f::LogDensityFunction)(θ::AbstractVector)
-    return getlogp(last(DynamicPPL.evaluate!!(f.model, VarInfo(f.varinfo, f.sampler, θ), f.sampler, f.context)))
+    return getlogp(last(DynamicPPL.evaluate!!(f.model, f.unflatten(θ), f.context)))
 end
 
 # Standard tag: Improves stacktraces
