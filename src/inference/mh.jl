@@ -245,7 +245,7 @@ This variant uses the  `set_namedtuple!` function to update the `VarInfo`.
 const MHLogDensityFunction{M<:Model,S<:Sampler{<:MH},V<:AbstractVarInfo} = Turing.SamplingLogDensityFunction{V,M,S,DynamicPPL.DefaultContext}
 
 function (f::MHLogDensityFunction)(x::NamedTuple)
-    sampler = f.sampler
+    sampler = Turing.getsampler(f)
     vi = f.varinfo
 
     x_old, lj_old = vi[sampler], getlogp(vi)
@@ -371,8 +371,9 @@ function propose!(
     mh_sampler = AMH.MetropolisHastings(dt)
     prev_trans = AMH.Transition(vt, getlogp(vi))
 
-    # Make a new transition.
-    densitymodel = AMH.DensityModel(Turing.LogDensityFunction(vi, model, spl, DynamicPPL.DefaultContext()))
+    # Make a new transition
+    f = Turing.LogDensityFunction(vi, model, spl, DynamicPPL.DefaultContext())
+    densitymodel = AMH.DensityModel(f)
     trans, _ = AbstractMCMC.step(rng, densitymodel, mh_sampler, prev_trans)
 
     # TODO: Make this compatible with immutable `VarInfo`.
@@ -393,20 +394,19 @@ function propose!(
 ) where {issymmetric}
     # If this is the case, we can just draw directly from the proposal
     # matrix.
-    vals = vi[spl]
+    vals, unlinearize = linearize(vi, spl)
 
     # Create a sampler and the previous transition.
     mh_sampler = AMH.MetropolisHastings(spl.alg.proposals)
     prev_trans = AMH.Transition(vals, getlogp(vi))
 
     # Make a new transition.
-    densitymodel = AMH.DensityModel(Turing.LogDensityFunction(vi, model, spl, DynamicPPL.DefaultContext()))
+    densitymodel = AMH.DensityModel(Turing.LogDensityFunction(vi, model, DynamicPPL.SamplingContext(spl), unlinearize))
     trans, _ = AbstractMCMC.step(rng, densitymodel, mh_sampler, prev_trans)
 
-    # TODO: Make this compatible with immutable `VarInfo`.
     # Update the values in the VarInfo.
-    setindex!!(vi, trans.params, spl)
-    setlogp!!(vi, trans.lp)
+    vi = setindex!!(vi, trans.params, spl)
+    vi = setlogp!!(vi, trans.lp)
 
     return vi
 end
