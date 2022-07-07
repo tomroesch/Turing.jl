@@ -154,13 +154,13 @@ function DynamicPPL.initialstep(
     vi = last(DynamicPPL.evaluate!!(model, rng, vi, spl))
 
     # Extract parameters.
-    theta = first(linearize(vi, spl))
+    theta, unlinearize = DynamicPPL.linearize(vi, spl)
 
     # Create a Hamiltonian.
     metricT = getmetricT(spl.alg)
     metric = metricT(length(theta))
     ∂logπ∂θ = gen_∂logπ∂θ(vi, spl, model)
-    logπ = Turing.LogDensityFunction(vi, model, spl, DynamicPPL.DefaultContext())
+    logπ = Turing.LogDensityFunction(vi, model, DynamicPPL.SamplingContext(rng, spl), unlinearize)
     hamiltonian = AHMC.Hamiltonian(metric, logπ, ∂logπ∂θ)
 
     # Compute phase point z.
