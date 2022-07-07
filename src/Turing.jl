@@ -6,6 +6,7 @@ using Statistics, LinearAlgebra
 using Libtask
 @reexport using Distributions, MCMCChains, Libtask, AbstractMCMC, Bijectors
 using Tracker: Tracker
+using DynamicPPL: DynamicPPL
 
 import AdvancedVI
 import DynamicPPL: getspace, NoDist, NamedDist, AbstractVarInfo, AbstractContext, AbstractSampler, Model
@@ -38,18 +39,22 @@ function LogDensityFunction(varinfo::AbstractVarInfo, model::Model, context::Abs
         varinfo,
         model,
         context,
-        last(DynamicPPL.linearize(varinfo))
+        last(DynamicPPL.linearize(varinfo, context))
     )
 end
 
 function LogDensityFunction(varinfo::AbstractVarInfo, model::Model, sampler::AbstractSampler, context::AbstractContext)
+    sampling_context = SamplingContext(sampler, context)
     return LogDensityFunction(
         varinfo,
         model,
-        SamplingContext(sampler, context),
-        last(DynamicPPL.linearize(varinfo, sampler))
+        sampling_context,
+        last(DynamicPPL.linearize(varinfo, sampling_context))
     )
 end
+
+const SamplingLogDensityFunction{V,M,S,C} = LogDensityFunction{V,M,<:DynamicPPL.SamplingContext{S,C}}
+getsampler(f::SamplingLogDensityFunction) = f.context.sampler
 
 function (f::LogDensityFunction)(θ::AbstractVector)
     return getlogp(last(DynamicPPL.evaluate!!(f.model, f.unflatten(θ), f.context)))
