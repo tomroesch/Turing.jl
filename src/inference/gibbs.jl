@@ -200,7 +200,7 @@ function DynamicPPL.initialstep(
     states = map(samplers) do local_spl
         # Recompute `vi.logp` if needed.
         if local_spl.selector.rerun
-            model(rng, vi, local_spl)
+            vi = last(DynamicPPL.evaluate!!(model, vi, DynamicPPL.SamplingContext(rng, local_spl)))
         end
 
         # Compute initial state.
@@ -230,20 +230,20 @@ function AbstractMCMC.step(
     # Iterate through each of the samplers.
     vi = state.vi
     samplers = state.samplers
-    states = map(samplers, state.states) do _sampler, _state
+    states = map(samplers, state.states) do local_sampler, local_state
         # Recompute `vi.logp` if needed.
-        if _sampler.selector.rerun
-            vi = last(DynamicPPL.evaluate!!(model, rng, vi, _sampler))
+        if local_sampler.selector.rerun
+            vi = last(DynamicPPL.evaluate!!(model, rng, vi, local_sampler))
         end
 
         # Update state of current sampler with updated `VarInfo` object.
-        current_state = gibbs_state(model, _sampler, _state, vi)
+        current_state = gibbs_state(model, local_sampler, local_state, vi)
 
         # Step through the local sampler.
-        _, newstate = AbstractMCMC.step(rng, model, _sampler, current_state; kwargs...)
+        _, newstate = AbstractMCMC.step(rng, model, local_sampler, current_state; kwargs...)
 
         # Update `VarInfo` object.
-        vi = gibbs_varinfo(model, _sampler, newstate)
+        vi = gibbs_varinfo(model, local_sampler, newstate)
 
         return newstate
     end
