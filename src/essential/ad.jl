@@ -65,8 +65,8 @@ Find the autodifferentiation backend of the algorithm `alg`.
 getADbackend(context::DynamicPPL.AbstractContext) = ADBackend()()
 getADbackend(context::DynamicPPL.SamplingContext) = getADbackend(context.sampler)
 
-getADbackend(spl::Sampler) = getADbackend(spl.alg)
-getADbackend(spl::SampleFromPrior) = ADBackend()()
+getADbackend(spl::DynamicPPL.AbstractSampler) = ADBackend()()
+getADbackend(spl::DynamicPPL.Sampler) = getADbackend(spl.alg)
 
 """
     gradient_logp(
@@ -86,7 +86,16 @@ function gradient_logp(
     model::Model,
     context::DynamicPPL.AbstractContext = DynamicPPL.DefaultContext()
 )
-    return gradient_logp(getADbackend(context), θ, vi, model, context)
+    # Define log density function.
+    f = Turing.LogDensityFunction(vi, model, context)
+    return gradient_logp(f, θ)
+end
+
+function gradient_logp(
+    f::Turing.LogDensityFunction,
+    θ::AbstractVector{<:Real},
+)
+    return gradient_logp(getADbackend(f.context), f, θ)
 end
 
 """
@@ -103,14 +112,9 @@ specified by `(vi, sampler, model)` using `backend` for AD, e.g. `ForwardDiffAD{
 """
 function gradient_logp(
     ad::ForwardDiffAD,
+    f::Turing.LogDensityFunction,
     θ::AbstractVector{<:Real},
-    vi::AbstractVarInfo,
-    model::Model,
-    context::DynamicPPL.AbstractContext = DynamicPPL.DefaultContext()
 )
-    # Define log density function.
-    f = Turing.LogDensityFunction(vi, model, context)
-
     # Define configuration for ForwardDiff.
     tag = if standardtag(ad)
         ForwardDiff.Tag(Turing.TuringTag(), eltype(θ))
@@ -134,36 +138,26 @@ function gradient_logp(
 end
 function gradient_logp(
     ::TrackerAD,
+    f::Turing.LogDensityFunction,
     θ::AbstractVector{<:Real},
-    vi::AbstractVarInfo,
-    model::Model,
-    context::DynamicPPL.AbstractContext = DynamicPPL.DefaultContext()
 )
-    # Define log density function.
-    f = Turing.LogDensityFunction(vi, model, context)
-
     # Compute forward pass and pullback.
     l_tracked, ȳ = Tracker.forward(f, θ)
 
     # Remove tracking info.
-    l::typeof(getlogp(vi)) = Tracker.data(l_tracked)
+    l::typeof(getlogp(f.varinfo)) = Tracker.data(l_tracked)
     ∂l∂θ::typeof(θ) = Tracker.data(only(ȳ(1)))
 
     return l, ∂l∂θ
 end
 
 function gradient_logp(
-    backend::ZygoteAD,
+    ::ZygoteAD,
+    f::Turing.LogDensityFunction,
     θ::AbstractVector{<:Real},
-    vi::AbstractVarInfo,
-    model::Model,
-    context::DynamicPPL.AbstractContext = DynamicPPL.DefaultContext()
 )
-    # Define log density function.
-    f = Turing.LogDensityFunction(vi, model, context)
-
     # Compute forward pass and pullback.
-    l::typeof(getlogp(vi)), ȳ = ZygoteRules.pullback(f, θ)
+    l::typeof(getlogp(f.varinfo)), ȳ = ZygoteRules.pullback(f, θ)
     ∂l∂θ::typeof(θ) = only(ȳ(1))
 
     return l, ∂l∂θ
