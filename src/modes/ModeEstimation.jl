@@ -80,7 +80,7 @@ end
 
 A struct that stores the negative log density function of a `DynamicPPL` model.
 """
-const OptimLogDensity{M<:Model,C<:OptimizationContext,V<:VarInfo} = Turing.LogDensityFunction{V,M,DynamicPPL.SampleFromPrior,C}
+const OptimLogDensity{M<:Model,C<:SamplingContext{<:OptimizationContext},V<:VarInfo} = Turing.LogDensityFunction{V,M,C}
 
 """
     OptimLogDensity(model::Model, context::OptimizationContext)

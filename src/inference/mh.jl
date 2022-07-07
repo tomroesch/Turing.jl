@@ -242,7 +242,7 @@ A log density function for the MH sampler.
 
 This variant uses the  `set_namedtuple!` function to update the `VarInfo`.
 """
-const MHLogDensityFunction{M<:Model,S<:Sampler{<:MH},V<:AbstractVarInfo} = Turing.LogDensityFunction{V,M,S,DynamicPPL.DefaultContext}
+const MHLogDensityFunction{M<:Model,S<:Sampler{<:MH},V<:AbstractVarInfo} = Turing.SamplingLogDensityFunction{V,M,S,DynamicPPL.DefaultContext}
 
 function (f::MHLogDensityFunction)(x::NamedTuple)
     sampler = f.sampler
